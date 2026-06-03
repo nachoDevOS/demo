@@ -18,8 +18,12 @@ pyinstaller ^
   cliente.py
 
 echo.
+echo Copiando config.ini a dist\...
+copy /Y config.ini dist\config.ini
+
+echo.
 echo ============================================
-echo  Listo! El ejecutable esta en dist\infoDesk.exe
-echo  Copiar MensaDesk.exe y config.ini a cada PC.
+echo  Listo! Archivos en dist\
+echo  Copiar infoDesk.exe y config.ini a cada PC.
 echo ============================================
 pause

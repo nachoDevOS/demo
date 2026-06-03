@@ -42,7 +42,14 @@ log = logging.getLogger('mensadesk')
 
 # ─── Configuración ─────────────────────────────────────────────────────────────
 config = configparser.ConfigParser()
-config.read(str(CONFIG_PATH), encoding='utf-8')
+# Leer config externo (dist/config.ini) — editable sin recompilar
+if CONFIG_PATH.exists():
+    config.read(str(CONFIG_PATH), encoding='utf-8-sig')  # utf-8-sig maneja BOM
+# Si no existe o está vacío, leer el bundleado dentro del exe
+if not config.sections() and getattr(sys, 'frozen', False):
+    _bundle_cfg = Path(sys._MEIPASS) / 'config.ini'
+    if _bundle_cfg.exists():
+        config.read(str(_bundle_cfg), encoding='utf-8')
 
 SERVIDOR_HOST    = config.get('servidor', 'host',    fallback='localhost')
 SERVIDOR_PORT    = config.get('servidor', 'port',    fallback='8080')
@@ -50,9 +57,40 @@ SERVIDOR_APP_KEY = config.get('servidor', 'app_key', fallback='')
 SERVIDOR_SCHEME  = config.get('servidor', 'scheme',  fallback='ws')
 API_URL          = config.get('servidor', 'api_url', fallback='http://localhost:8000').rstrip('/')
 
-PC_NOMBRE = config.get('pc', 'nombre', fallback='').strip()
+def _leer_nombre_config(path: Path) -> str:
+    """Lee nombre= del config.ini directamente, sin depender de configparser."""
+    for p in [path]:
+        try:
+            texto = p.read_text(encoding='utf-8-sig')
+            en_pc = False
+            for linea in texto.splitlines():
+                l = linea.strip()
+                if l.lower() == '[pc]':
+                    en_pc = True
+                    continue
+                if en_pc:
+                    if l.startswith('['):
+                        break
+                    if l.startswith(';') or l.startswith('#') or not l:
+                        continue
+                    if '=' in l:
+                        clave, _, valor = l.partition('=')
+                        if clave.strip().lower() == 'nombre':
+                            v = valor.strip()
+                            if v:
+                                return v
+        except Exception:
+            pass
+    return ''
+
+PC_NOMBRE = _leer_nombre_config(CONFIG_PATH)
+# Fallback al bundleado dentro del exe
+if not PC_NOMBRE and getattr(sys, 'frozen', False):
+    _bundle = Path(sys._MEIPASS) / 'config.ini'
+    PC_NOMBRE = _leer_nombre_config(_bundle)
 if not PC_NOMBRE:
     PC_NOMBRE = socket.gethostname()
+log.info(f"Nombre PC resuelto: '{PC_NOMBRE}' (config: {CONFIG_PATH})")
 
 WS_URL = f"{SERVIDOR_SCHEME}://{SERVIDOR_HOST}:{SERVIDOR_PORT}/app/{SERVIDOR_APP_KEY}"
 
