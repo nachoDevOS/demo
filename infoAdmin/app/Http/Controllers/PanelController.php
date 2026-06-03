@@ -29,7 +29,7 @@ class PanelController extends Controller
             $request->validate([
                 'tipo'      => ['required', 'in:'.$slugsValidos],
                 'titulo'    => ['required', 'string', 'max:200'],
-                'cuerpo'    => ['required', 'string', 'max:2000'],
+                'cuerpo'    => ['required', 'string', 'max:20000'],
                 'remitente' => ['required', 'string', 'max:100'],
                 'archivo'   => ['nullable', 'file', 'max:20480', 'mimes:pdf,jpg,jpeg,png,gif'],
             ]);

@@ -3,7 +3,50 @@
 @section('title', 'Panel de Envío')
 
 @push('styles')
+<link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
 <style>
+    /* ── Quill editor ─────────────────────────────────────── */
+    .ql-container {
+        border-radius: 0 0 10px 10px !important;
+        border-color: #E2E8F0 !important;
+        font-family: 'Segoe UI', system-ui, sans-serif !important;
+        font-size: .9rem !important;
+        min-height: 160px;
+        background: #FAFCFF;
+    }
+    .ql-toolbar {
+        border-radius: 10px 10px 0 0 !important;
+        border-color: #E2E8F0 !important;
+        background: #F8FAFC;
+        padding: 8px 10px !important;
+    }
+    .ql-toolbar .ql-formats { margin-right: 10px !important; }
+    .ql-toolbar button:hover, .ql-toolbar button.ql-active,
+    .ql-toolbar .ql-picker-label:hover {
+        color: #1B4F8A !important;
+    }
+    .ql-toolbar button:hover .ql-stroke,
+    .ql-toolbar button.ql-active .ql-stroke {
+        stroke: #1B4F8A !important;
+    }
+    .ql-toolbar button:hover .ql-fill,
+    .ql-toolbar button.ql-active .ql-fill {
+        fill: #1B4F8A !important;
+    }
+    .ql-editor { min-height: 160px; padding: 12px 16px !important; }
+    .ql-editor.ql-blank::before {
+        color: #94A3B8 !important;
+        font-style: normal !important;
+    }
+    /* Borde focus */
+    #quill-wrapper:focus-within .ql-toolbar,
+    #quill-wrapper:focus-within .ql-container {
+        border-color: #1B4F8A !important;
+    }
+    #quill-wrapper:focus-within .ql-toolbar {
+        box-shadow: 3px 0 0 3px rgba(27,79,138,.08), -3px 0 0 3px rgba(27,79,138,.08), 0 -3px 0 3px rgba(27,79,138,.08);
+    }
+
     /* ── Tipo de mensaje ──────────────────────────────────── */
     .tipo-grid {
         display: grid;
@@ -233,11 +276,13 @@
                     {{-- Cuerpo --}}
                     <div class="mb-3">
                         <div class="d-flex justify-content-between align-items-center mb-1">
-                            <label class="form-label-mp mb-0" for="cuerpo">Mensaje <span class="text-danger">*</span></label>
-                            <span class="char-counter"><span id="cnt-cuerpo">0</span>/2000</span>
+                            <label class="form-label-mp mb-0">Mensaje <span class="text-danger">*</span></label>
+                            <span class="char-counter"><span id="cnt-cuerpo">0</span> caracteres</span>
                         </div>
-                        <textarea name="cuerpo" id="cuerpo" class="form-control form-control-mp" rows="5"
-                                  maxlength="2000" placeholder="Escribe el contenido del mensaje..." required></textarea>
+                        <div id="quill-wrapper">
+                            <div id="quill-editor"></div>
+                        </div>
+                        <input type="hidden" name="cuerpo" id="cuerpo">
                     </div>
 
                     {{-- Remitente --}}
@@ -343,14 +388,37 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
 <script>
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
+// ── Quill ──────────────────────────────────────────────────
+const quill = new Quill('#quill-editor', {
+    theme: 'snow',
+    placeholder: 'Escribe el contenido del mensaje...',
+    modules: {
+        toolbar: [
+            ['bold', 'italic', 'underline'],
+            [{ 'color': [] }, { 'background': [] }],
+            [{ 'align': [] }],
+            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+            [{ 'indent': '-1' }, { 'indent': '+1' }],
+            ['clean'],
+        ],
+    },
+});
+
+// Evitar que la toolbar robe el foco — permite toggle B/I/U mientras se escribe
+document.querySelector('.ql-toolbar').addEventListener('mousedown', e => e.preventDefault());
+
+quill.on('text-change', function() {
+    const texto = quill.getText().trim();
+    document.getElementById('cnt-cuerpo').textContent = texto.length;
+    document.getElementById('cuerpo').value = quill.root.innerHTML;
+});
+
 document.getElementById('titulo').addEventListener('input', function() {
     document.getElementById('cnt-titulo').textContent = this.value.length;
-});
-document.getElementById('cuerpo').addEventListener('input', function() {
-    document.getElementById('cnt-cuerpo').textContent = this.value.length;
 });
 
 // Drag & drop
@@ -415,6 +483,18 @@ document.getElementById('form-envio').addEventListener('submit', async function(
     toastOk.classList.add('d-none');
     toastEr.classList.add('d-none');
 
+    // Sincronizar contenido Quill al hidden input antes de enviar
+    const textoPlano = quill.getText().trim();
+    if (!textoPlano) {
+        document.getElementById('toast-err-msg').textContent = 'El mensaje no puede estar vacío.';
+        toastEr.classList.remove('d-none');
+        btn.disabled = false;
+        text.classList.remove('d-none');
+        spin.classList.add('d-none');
+        return;
+    }
+    document.getElementById('cuerpo').value = quill.root.innerHTML;
+
     try {
         const fd = new FormData(this);
         const r  = await fetch('{{ route("panel.enviar") }}', {
@@ -430,6 +510,8 @@ document.getElementById('form-envio').addEventListener('submit', async function(
             this.reset();
             document.getElementById('cnt-titulo').textContent = '0';
             document.getElementById('cnt-cuerpo').textContent = '0';
+            quill.setContents([]);
+            document.getElementById('cuerpo').value = '';
             document.getElementById('archivo-info').classList.add('d-none');
             recargarHistorialMini();
         } else {

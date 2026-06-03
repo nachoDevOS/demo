@@ -27,10 +27,15 @@ class MensajeEnviado implements ShouldBroadcastNow
 
     public function broadcastWith(): array
     {
+        $color = \App\Models\TipoMensaje::where('slug', $this->mensaje->tipo)
+            ->value('color') ?? '#1B4F8A';
+
         return [
             'tipo'            => $this->mensaje->tipo,
+            'color'           => $color,
             'titulo'          => $this->mensaje->titulo,
-            'cuerpo'          => $this->mensaje->cuerpo,
+            'cuerpo'          => strip_tags($this->mensaje->cuerpo),
+            'cuerpo_html'     => $this->mensaje->cuerpo,
             'remitente'       => $this->mensaje->remitente,
             'timestamp'       => $this->mensaje->created_at?->format('Y-m-d H:i:s'),
             'mensaje_id'      => $this->mensaje->id,

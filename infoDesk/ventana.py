@@ -1,6 +1,7 @@
 # infoDesk — Ventana emergente con visor de PDF e imágenes
 # Maneja la cola de mensajes y muestra notificaciones al usuario.
 
+import html as _html_mod
 import io
 import logging
 import os
@@ -9,6 +10,7 @@ import sys
 import threading
 import time
 import tkinter as tk
+from html.parser import HTMLParser
 from pathlib import Path
 from tkinter import messagebox, filedialog
 
@@ -66,7 +68,93 @@ def _reproducir_sonido():
     threading.Thread(target=_play, daemon=True).start()
 
 
-# Colores según tipo de mensaje
+# ── Renderizador HTML → tkinter Text ─────────────────────────────────────────
+class _HTMLRenderer(HTMLParser):
+    """Parsea HTML de Quill e inserta texto formateado en un tk.Text widget."""
+
+    def __init__(self, widget: tk.Text):
+        super().__init__()
+        self.w = widget
+        self._fmt: list[str] = []   # stack de formatos activos
+        self._list_type: list[str] = []
+        self._li_num:    list[int]  = []
+        self._pending_nl = False
+
+        widget.tag_config('bold',        font=('Segoe UI', 10, 'bold'))
+        widget.tag_config('italic',      font=('Segoe UI', 10, 'italic'))
+        widget.tag_config('bold_italic', font=('Segoe UI', 10, 'bold italic'))
+        widget.tag_config('underline',   underline=True)
+        widget.tag_config('bullet',      lmargin1=18, lmargin2=28)
+
+    def _flush_nl(self):
+        if self._pending_nl:
+            self.w.insert('end', '\n')
+            self._pending_nl = False
+
+    def handle_starttag(self, tag, attrs):
+        tag = tag.lower()
+        if tag in ('b', 'strong'):  self._fmt.append('bold')
+        elif tag in ('i', 'em'):    self._fmt.append('italic')
+        elif tag == 'u':            self._fmt.append('underline')
+        elif tag == 'br':
+            self._flush_nl()
+            self.w.insert('end', '\n')
+        elif tag == 'p':
+            self._flush_nl()
+        elif tag == 'ul':
+            self._list_type.append('ul'); self._li_num.append(0)
+        elif tag == 'ol':
+            self._list_type.append('ol'); self._li_num.append(0)
+        elif tag == 'li':
+            self._flush_nl()
+            if self._list_type and self._list_type[-1] == 'ol':
+                self._li_num[-1] += 1
+                self._insert(f'  {self._li_num[-1]}. ')
+            else:
+                self._insert('  • ')
+
+    def handle_endtag(self, tag):
+        tag = tag.lower()
+        if tag in ('b', 'strong', 'i', 'em', 'u'):
+            if self._fmt: self._fmt.pop()
+        elif tag in ('p', 'div', 'li', 'h1', 'h2', 'h3', 'h4'):
+            self._pending_nl = True
+        elif tag in ('ul', 'ol'):
+            if self._list_type: self._list_type.pop()
+            if self._li_num:    self._li_num.pop()
+            self._pending_nl = True
+
+    def handle_data(self, data):
+        text = _html_mod.unescape(data)
+        if text:
+            self._flush_nl()
+            self._insert(text)
+
+    def _insert(self, text: str):
+        active = set(self._fmt)
+        if 'bold' in active and 'italic' in active:
+            tags = ('bold_italic',)
+        elif 'bold' in active:
+            tags = ('bold',)
+        elif 'italic' in active:
+            tags = ('italic',)
+        else:
+            tags = ()
+        if 'underline' in active:
+            tags = tags + ('underline',)
+        self.w.insert('end', text, tags)
+
+
+def _renderizar_html(widget: tk.Text, html_content: str):
+    """Inserta HTML de Quill en un tk.Text widget con formato aplicado."""
+    try:
+        renderer = _HTMLRenderer(widget)
+        renderer.feed(html_content)
+    except Exception:
+        widget.insert('end', _html_mod.unescape(html_content))
+
+
+# Colores según tipo de mensaje (fallback si no llega color desde servidor)
 COLORES_TIPO = {
     'notificacion': '#1B4F8A',
     'instructivo':  '#1D6A3A',
@@ -136,6 +224,7 @@ class VentanaMensaje:
         tipo   = self.datos.get('tipo', 'notificacion')
         titulo = self.datos.get('titulo', 'Mensaje')
         cuerpo = self.datos.get('cuerpo', '')
+        cuerpo_html = self.datos.get('cuerpo_html', '')
         remitente = self.datos.get('remitente', '')
         timestamp = self.datos.get('timestamp', '')
         tiene_archivo = self.datos.get('tiene_archivo', False)
@@ -143,7 +232,8 @@ class VentanaMensaje:
         archivo_tipo  = self.datos.get('archivo_tipo')
         archivo_nombre = self.datos.get('archivo_nombre', 'archivo')
 
-        color = COLORES_TIPO.get(tipo, '#1B4F8A')
+        # Color dinámico desde servidor, fallback a dict local
+        color = self.datos.get('color') or COLORES_TIPO.get(tipo, '#1B4F8A')
         icono = ICONOS_TIPO.get(tipo, '📨')
 
         # Crear ventana secundaria (Toplevel)
@@ -240,10 +330,12 @@ class VentanaMensaje:
         txt_cuerpo = tk.Text(self.frame_scroll, wrap='word', height=6,
                              font=('Segoe UI', 10), bg='#F8F9FA',
                              fg='#333', relief='flat', padx=10, pady=8,
-                             state='disabled', cursor='arrow')
+                             cursor='arrow', spacing1=2, spacing2=2)
         txt_cuerpo.pack(fill='x', padx=18, pady=10)
-        txt_cuerpo.configure(state='normal')
-        txt_cuerpo.insert('end', cuerpo)
+        if cuerpo_html:
+            _renderizar_html(txt_cuerpo, cuerpo_html)
+        else:
+            txt_cuerpo.insert('end', cuerpo)
         txt_cuerpo.configure(state='disabled')
 
         # ── Archivo adjunto ───────────────────────────────────────────────────

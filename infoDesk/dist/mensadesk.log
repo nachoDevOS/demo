@@ -1,126 +1,24 @@
-2026-06-03 16:22:46 [INFO] Nombre PC resuelto: 'Ignacio' (config: D:\DOCUMENTOS USER\Desktop\sistema emergente\infoDesk\dist\config.ini)
-2026-06-03 16:22:46 [INFO] infoDesk iniciado | PC: Ignacio | WS: ws://localhost:8080/app/xk2z9tboo2ajmwtwl2qn
-2026-06-03 16:22:46 [INFO] Registrado en inicio automático de Windows
-2026-06-03 16:22:46 [INFO] Conectando a ws://localhost:8080/app/xk2z9tboo2ajmwtwl2qn...
-2026-06-03 16:22:48 [INFO] Websocket connected
-2026-06-03 16:22:48 [INFO] WebSocket conectado
-2026-06-03 16:22:48 [INFO] Suscrito al canal 'mensajes'
-2026-06-03 16:22:48 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:22:50 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:22:59 [INFO] Mensaje recibido: Pruevabv
-2026-06-03 16:22:59 [INFO] Ventana creada: Pruevabv
-2026-06-03 16:23:02 [INFO] Confirmación enviada: mensaje #11 — recibido
-2026-06-03 16:23:10 [INFO] Ventana creada: Pruevabv
-2026-06-03 16:23:12 [INFO] Confirmación enviada: mensaje #11 — recibido
-2026-06-03 16:23:21 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:23:53 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:24:25 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:24:49 [INFO] Ventana creada: Pruevabv
-2026-06-03 16:24:52 [INFO] Confirmación enviada: mensaje #11 — recibido
-2026-06-03 16:24:58 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:25:07 [INFO] Mensaje recibido: !!!1
-2026-06-03 16:25:07 [INFO] Ventana creada: !!!1
-2026-06-03 16:25:10 [INFO] Confirmación enviada: mensaje #12 — recibido
-2026-06-03 16:25:30 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:26:03 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:26:35 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:27:07 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:27:40 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:28:12 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:28:14 [INFO] Mensaje recibido: Milton
-2026-06-03 16:28:15 [INFO] Ventana creada: Milton
-2026-06-03 16:28:17 [INFO] Confirmación enviada: mensaje #13 — recibido
-2026-06-03 16:28:37 [INFO] Ventana creada: Milton
-2026-06-03 16:28:39 [INFO] Confirmación enviada: mensaje #13 — recibido
-2026-06-03 16:28:44 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:28:52 [INFO] Ventana creada: Milton
-2026-06-03 16:28:54 [INFO] Confirmación enviada: mensaje #13 — recibido
-2026-06-03 16:29:08 [INFO] Confirmación enviada: mensaje #13 — descargado
-2026-06-03 16:29:12 [INFO] Confirmación enviada: mensaje #13 — visto
-2026-06-03 16:29:17 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:29:49 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:30:22 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:30:54 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:31:09 [INFO] Mensaje recibido: fff
-2026-06-03 16:31:10 [INFO] Ventana creada: fff
-2026-06-03 16:31:12 [INFO] Confirmación enviada: mensaje #14 — recibido
-2026-06-03 16:31:23 [INFO] Confirmación enviada: mensaje #14 — descargado
-2026-06-03 16:31:25 [INFO] Confirmación enviada: mensaje #14 — visto
-2026-06-03 16:31:26 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:31:36 [INFO] Ventana creada: fff
-2026-06-03 16:31:38 [INFO] Confirmación enviada: mensaje #14 — recibido
-2026-06-03 16:31:59 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:32:31 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:32:53 [INFO] Mensaje recibido: Rapido
-2026-06-03 16:32:53 [INFO] Ventana creada: Rapido
-2026-06-03 16:32:55 [INFO] Confirmación enviada: mensaje #15 — recibido
-2026-06-03 16:33:04 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:33:17 [INFO] Mensaje recibido: sdfdsdaf
-2026-06-03 16:33:24 [INFO] Ventana creada: sdfdsdaf
-2026-06-03 16:33:26 [INFO] Confirmación enviada: mensaje #16 — recibido
-2026-06-03 16:33:36 [INFO] Mensaje recibido: ertert
-2026-06-03 16:33:37 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:33:37 [INFO] Ventana creada: ertert
-2026-06-03 16:33:39 [INFO] Confirmación enviada: mensaje #17 — recibido
-2026-06-03 16:34:09 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:34:44 [INFO] Nombre PC resuelto: 'Ignacio' (config: D:\DOCUMENTOS USER\Desktop\sistema emergente\infoDesk\dist\config.ini)
-2026-06-03 16:34:44 [INFO] infoDesk iniciado | PC: Ignacio | WS: ws://localhost:8080/app/xk2z9tboo2ajmwtwl2qn
-2026-06-03 16:34:44 [INFO] Registrado en inicio automático de Windows
-2026-06-03 16:34:44 [INFO] Conectando a ws://localhost:8080/app/xk2z9tboo2ajmwtwl2qn...
-2026-06-03 16:34:46 [INFO] Websocket connected
-2026-06-03 16:34:46 [INFO] WebSocket conectado
-2026-06-03 16:34:46 [INFO] Suscrito al canal 'mensajes'
-2026-06-03 16:34:47 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:34:49 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:35:19 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:35:44 [INFO] WebSocket desconectado (código None)
-2026-06-03 16:43:56 [INFO] Nombre PC resuelto: 'Ignacio' (config: D:\DOCUMENTOS USER\Desktop\sistema emergente\infoDesk\dist\config.ini)
-2026-06-03 16:43:56 [INFO] infoDesk iniciado | PC: Ignacio | WS: ws://localhost:8080/app/xk2z9tboo2ajmwtwl2qn
-2026-06-03 16:43:56 [INFO] Registrado en inicio automático de Windows
-2026-06-03 16:43:56 [INFO] Conectando a ws://localhost:8080/app/xk2z9tboo2ajmwtwl2qn...
-2026-06-03 16:43:58 [INFO] Websocket connected
-2026-06-03 16:43:58 [INFO] WebSocket conectado
-2026-06-03 16:43:58 [INFO] Suscrito al canal 'mensajes'
-2026-06-03 16:43:58 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:44:00 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:44:15 [INFO] Mensaje recibido: Prueba
-2026-06-03 16:44:16 [INFO] Ventana creada: Prueba
-2026-06-03 16:44:18 [INFO] Confirmación enviada: mensaje #19 — recibido
-2026-06-03 16:44:31 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:44:56 [INFO] Confirmación enviada: mensaje #19 — visto
-2026-06-03 16:45:02 [INFO] Ventana creada: Prueba
-2026-06-03 16:45:03 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:45:04 [INFO] Confirmación enviada: mensaje #19 — recibido
-2026-06-03 16:45:05 [INFO] Confirmación enviada: mensaje #19 — visto
-2026-06-03 16:45:35 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:45:38 [INFO] Ventana creada: Prueba
-2026-06-03 16:45:41 [INFO] Confirmación enviada: mensaje #19 — recibido
-2026-06-03 16:45:52 [INFO] Confirmación enviada: mensaje #19 — descargado
-2026-06-03 16:46:08 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:46:40 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:47:13 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:47:36 [INFO] Confirmación enviada: mensaje #19 — visto
-2026-06-03 16:47:45 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:48:04 [INFO] Mensaje recibido: Reunion
-2026-06-03 16:48:04 [INFO] Ventana creada: Reunion
-2026-06-03 16:48:07 [INFO] Confirmación enviada: mensaje #20 — recibido
-2026-06-03 16:48:18 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:48:22 [INFO] Ventana creada: Reunion
-2026-06-03 16:48:25 [INFO] Confirmación enviada: mensaje #20 — recibido
-2026-06-03 16:48:44 [INFO] Mensaje recibido: Instr
-2026-06-03 16:48:44 [INFO] Ventana creada: Instr
-2026-06-03 16:48:46 [INFO] Confirmación enviada: mensaje #21 — recibido
-2026-06-03 16:48:50 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:49:23 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:49:55 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:50:28 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:51:00 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:51:33 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:52:05 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:52:37 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:53:10 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:53:42 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:54:15 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:54:47 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:55:19 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
-2026-06-03 16:55:51 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
+2026-06-03 17:25:28 [INFO] Nombre PC resuelto: 'Ignacio' (config: D:\DOCUMENTOS USER\Desktop\sistema emergente\infoDesk\dist\config.ini)
+2026-06-03 17:25:28 [INFO] infoDesk iniciado | PC: Ignacio | WS: ws://localhost:8080/app/xk2z9tboo2ajmwtwl2qn
+2026-06-03 17:25:28 [INFO] Registrado en inicio automático de Windows
+2026-06-03 17:25:28 [INFO] Conectando a ws://localhost:8080/app/xk2z9tboo2ajmwtwl2qn...
+2026-06-03 17:25:30 [INFO] Websocket connected
+2026-06-03 17:25:30 [INFO] WebSocket conectado
+2026-06-03 17:25:30 [INFO] Suscrito al canal 'mensajes'
+2026-06-03 17:25:31 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
+2026-06-03 17:25:33 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
+2026-06-03 17:26:03 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
+2026-06-03 17:26:09 [INFO] Mensaje recibido: Recordatorios
+2026-06-03 17:26:09 [INFO] Ventana creada: Recordatorios
+2026-06-03 17:26:12 [INFO] Confirmación enviada: mensaje #22 — recibido
+2026-06-03 17:26:36 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
+2026-06-03 17:27:04 [INFO] Mensaje recibido: sdfsdf
+2026-06-03 17:27:05 [INFO] Ventana creada: sdfsdf
+2026-06-03 17:27:07 [INFO] Confirmación enviada: mensaje #23 — recibido
+2026-06-03 17:27:08 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
+2026-06-03 17:27:41 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
+2026-06-03 17:28:13 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
+2026-06-03 17:28:21 [INFO] Mensaje recibido: Prueba
+2026-06-03 17:28:21 [INFO] Ventana creada: Prueba
+2026-06-03 17:28:24 [INFO] Confirmación enviada: mensaje #24 — recibido
+2026-06-03 17:28:45 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
