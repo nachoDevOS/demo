@@ -229,6 +229,7 @@ def guardar_en_bandeja(datos: dict):
                 bandeja = []
         entrada = dict(datos)
         entrada['_fecha_local'] = datetime.datetime.now().strftime('%d/%m/%Y %H:%M')
+        entrada.setdefault('_leido', False)
         bandeja.insert(0, entrada)
         bandeja = bandeja[:100]  # Máximo 100 mensajes
         utf8 = __import__('codecs').lookup('utf-8').incrementaldecoder
