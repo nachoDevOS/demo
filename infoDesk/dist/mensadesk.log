@@ -1,4 +1,13 @@
-2026-06-03 15:42:19 [INFO] Nombre PC resuelto: 'Ignacio' (config: D:\DOCUMENTOS USER\Desktop\sistema emergente\infoDesk\dist\config.ini)
-2026-06-03 15:42:19 [INFO] infoDesk iniciado | PC: Ignacio | WS: ws://localhost:8080/app/xk2z9tboo2ajmwtwl2qn
-2026-06-03 15:42:19 [INFO] Registrado en inicio automático de Windows
-2026-06-03 15:42:19 [INFO] Conectando a ws://localhost:8080/app/xk2z9tboo2ajmwtwl2qn...
+2026-06-03 16:00:17 [INFO] Nombre PC resuelto: 'Ignacio' (config: D:\DOCUMENTOS USER\Desktop\sistema emergente\infoDesk\dist\config.ini)
+2026-06-03 16:00:17 [INFO] infoDesk iniciado | PC: Ignacio | WS: ws://localhost:8080/app/xk2z9tboo2ajmwtwl2qn
+2026-06-03 16:00:17 [INFO] Registrado en inicio automático de Windows
+2026-06-03 16:00:17 [INFO] Conectando a ws://localhost:8080/app/xk2z9tboo2ajmwtwl2qn...
+2026-06-03 16:00:19 [INFO] Websocket connected
+2026-06-03 16:00:19 [INFO] WebSocket conectado
+2026-06-03 16:00:19 [INFO] Suscrito al canal 'mensajes'
+2026-06-03 16:00:20 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
+2026-06-03 16:00:22 [INFO] Registrado en servidor: Ignacio (192.168.14.150)
+2026-06-03 16:00:32 [INFO] Mensaje recibido: Prueba
+2026-06-03 16:00:33 [INFO] Ventana creada: Prueba
+2026-06-03 16:00:35 [INFO] Confirmación enviada: mensaje #7 — recibido
+2026-06-03 16:00:52 [INFO] Registrado en servidor: Ignacio (192.168.14.150)

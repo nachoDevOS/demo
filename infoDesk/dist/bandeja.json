@@ -1,0 +1,16 @@
+[
+  {
+    "tipo": "notificacion",
+    "titulo": "Prueba",
+    "cuerpo": "aaa",
+    "remitente": "Administrador",
+    "timestamp": "2026-06-03 20:00:32",
+    "mensaje_id": 7,
+    "tiene_archivo": true,
+    "archivo_nombre": "visor (1).pdf",
+    "archivo_url": "http://127.0.0.1:8000/uploads/mensa_6a2087e0b04f00.48936865.pdf",
+    "archivo_tipo": "pdf",
+    "archivo_tamanio": 155149,
+    "_fecha_local": "03/06/2026 16:00"
+  }
+]

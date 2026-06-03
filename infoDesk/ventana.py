@@ -432,10 +432,136 @@ class VentanaMensaje:
         self.al_cerrar_fn()
 
 
+# ─── Ventana historial / bandeja ──────────────────────────────────────────────
+class VentanaHistorial:
+    """Lista de todos los mensajes recibidos, con opción de releer cada uno."""
+
+    def __init__(self, root: tk.Tk, bandeja_path):
+        import json as _json
+
+        self.root = root
+        self.mensajes = []
+        try:
+            if Path(bandeja_path).exists():
+                self.mensajes = _json.loads(
+                    Path(bandeja_path).read_text(encoding='utf-8')
+                )
+        except Exception:
+            pass
+
+        self.win = tk.Toplevel(root)
+        self.win.title('infoDesk — Mensajes recibidos')
+        self.win.overrideredirect(True)
+        self.win.attributes('-topmost', True)
+        self.win.configure(bg='#FFFFFF')
+
+        w, h = 560, 500
+        self.win.update_idletasks()
+        sw = self.win.winfo_screenwidth() or 1920
+        sh = self.win.winfo_screenheight() or 1080
+        self.win.geometry(f'{w}x{h}+{max(0,(sw-w)//2)}+{max(0,(sh-h)//2)}')
+
+        # Header
+        header = tk.Frame(self.win, bg='#1B4F8A', height=55)
+        header.pack(fill='x')
+        header.pack_propagate(False)
+
+        if PIL_OK:
+            ico_path = _get_resource_path('icono.ico')
+            try:
+                ico_img = Image.open(str(ico_path)).resize((22, 22), Image.LANCZOS)
+                ico_photo = ImageTk.PhotoImage(ico_img)
+                self._ico_ref = ico_photo
+                tk.Label(header, image=ico_photo, bg='#1B4F8A').pack(side='left', padx=(14, 4), pady=16)
+            except Exception:
+                pass
+
+        tk.Label(header, text='Bandeja de mensajes recibidos',
+                 bg='#1B4F8A', fg='white',
+                 font=('Segoe UI', 10, 'bold')).pack(side='left', pady=16)
+
+        tk.Button(header, text='✕', bg='#1B4F8A', fg='white',
+                  font=('Segoe UI', 12), relief='flat', cursor='hand2',
+                  command=self.win.destroy).pack(side='right', padx=12)
+
+        # Lista con scroll
+        frame_lista = tk.Frame(self.win, bg='#F0F4F8')
+        frame_lista.pack(fill='both', expand=True, padx=10, pady=10)
+
+        canvas = tk.Canvas(frame_lista, bg='#F0F4F8', highlightthickness=0)
+        scroll = tk.Scrollbar(frame_lista, orient='vertical', command=canvas.yview)
+        canvas.configure(yscrollcommand=scroll.set)
+        scroll.pack(side='right', fill='y')
+        canvas.pack(side='left', fill='both', expand=True)
+
+        frame_items = tk.Frame(canvas, bg='#F0F4F8')
+        canvas.create_window((0, 0), window=frame_items, anchor='nw')
+        frame_items.bind('<Configure>', lambda e: canvas.configure(
+            scrollregion=canvas.bbox('all')))
+        canvas.bind('<MouseWheel>', lambda e: canvas.yview_scroll(
+            int(-1 * (e.delta / 120)), 'units'))
+
+        colores = {'notificacion': '#1B4F8A', 'instructivo': '#1D6A3A',
+                   'urgente': '#B71C1C', 'reunion': '#E65100'}
+
+        if not self.mensajes:
+            tk.Label(frame_items, text='Sin mensajes recibidos aún.',
+                     bg='#F0F4F8', fg='#999', font=('Segoe UI', 10)
+                     ).pack(pady=30)
+        else:
+            for m in self.mensajes:
+                color = colores.get(m.get('tipo', ''), '#1B4F8A')
+                card = tk.Frame(frame_items, bg='#FFFFFF', relief='flat',
+                                bd=0, cursor='hand2')
+                card.pack(fill='x', padx=4, pady=3)
+
+                tk.Frame(card, bg=color, width=5).pack(side='left', fill='y')
+
+                info = tk.Frame(card, bg='#FFFFFF', padx=10, pady=8)
+                info.pack(side='left', fill='both', expand=True)
+
+                top_row = tk.Frame(info, bg='#FFFFFF')
+                top_row.pack(fill='x')
+
+                tk.Label(top_row, text=m.get('titulo', ''),
+                         bg='#FFFFFF', fg='#1A1A2E',
+                         font=('Segoe UI', 10, 'bold'),
+                         anchor='w').pack(side='left')
+
+                tk.Label(top_row,
+                         text=m.get('_fecha_local', m.get('timestamp', '')),
+                         bg='#FFFFFF', fg='#999',
+                         font=('Segoe UI', 8)).pack(side='right')
+
+                tk.Label(info, text=m.get('cuerpo', '')[:80] + ('...' if len(m.get('cuerpo',''))>80 else ''),
+                         bg='#FFFFFF', fg='#555',
+                         font=('Segoe UI', 9), anchor='w',
+                         wraplength=460, justify='left').pack(fill='x')
+
+                tipo_badge = tk.Label(info,
+                                      text=f"  {m.get('tipo','').upper()}  ",
+                                      bg=color, fg='white',
+                                      font=('Segoe UI', 7, 'bold'))
+                tipo_badge.pack(anchor='w', pady=(2, 0))
+
+                def _abrir(datos=m):
+                    self.win.destroy()
+                    with __import__('cliente')._cola_lock:
+                        __import__('cliente')._cola_mensajes.append(datos)
+
+                card.bind('<Button-1>', lambda e, d=m: _abrir(d))
+                info.bind('<Button-1>', lambda e, d=m: _abrir(d))
+
+        self.win.lift()
+        self.win.focus_force()
+
+
 # ─── Loop principal de ventanas ────────────────────────────────────────────────
 def iniciar_ventana_loop(cola_mensajes: list, cola_lock,
                           pc_nombre: str, api_url: str,
-                          enviar_confirmacion_fn, tray_fn):
+                          enviar_confirmacion_fn, tray_fn,
+                          cola_bandeja=None, cola_bandeja_lock=None,
+                          bandeja_path=None, **kwargs):
     """
     Inicia tkinter en el hilo principal y procesa la cola de mensajes.
     El icono de bandeja se lanza en un hilo aparte.
@@ -476,5 +602,15 @@ def iniciar_ventana_loop(cola_mensajes: list, cola_lock,
                     ventana_activa[0] = False  # Resetear para que el próximo mensaje funcione
         root.after(500, verificar_cola)
 
+    def verificar_bandeja():
+        if cola_bandeja is not None and cola_bandeja_lock is not None:
+            with cola_bandeja_lock:
+                abrir = bool(cola_bandeja)
+                cola_bandeja.clear()
+            if abrir and bandeja_path is not None:
+                VentanaHistorial(root, bandeja_path)
+        root.after(600, verificar_bandeja)
+
+    root.after(600, verificar_bandeja)
     root.after(500, verificar_cola)
     root.mainloop()

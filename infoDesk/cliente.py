@@ -29,7 +29,8 @@ else:
     BASE_DIR = Path(__file__).parent
 
 CONFIG_PATH = BASE_DIR / 'config.ini'
-LOG_PATH    = BASE_DIR / 'mensadesk.log'
+LOG_PATH        = BASE_DIR / 'mensadesk.log'
+BANDEJA_PATH    = BASE_DIR / 'bandeja.json'
 
 # ─── Logging ───────────────────────────────────────────────────────────────────
 logging.basicConfig(
@@ -216,17 +217,52 @@ def iniciar_websocket():
 
 
 # ─── Mostrar notificación en hilo separado ─────────────────────────────────────
+def guardar_en_bandeja(datos: dict):
+    """Guarda el mensaje recibido en bandeja.json (máx 100 mensajes)."""
+    try:
+        import datetime, json as _json
+        bandeja = []
+        if BANDEJA_PATH.exists():
+            try:
+                bandeja = _json.loads(BANDEJA_PATH.read_text(encoding='utf-8'))
+            except Exception:
+                bandeja = []
+        entrada = dict(datos)
+        entrada['_fecha_local'] = datetime.datetime.now().strftime('%d/%m/%Y %H:%M')
+        bandeja.insert(0, entrada)
+        bandeja = bandeja[:100]  # Máximo 100 mensajes
+        utf8 = __import__('codecs').lookup('utf-8').incrementaldecoder
+        BANDEJA_PATH.write_text(
+            _json.dumps(bandeja, ensure_ascii=False, indent=2),
+            encoding='utf-8'
+        )
+    except Exception as e:
+        log.warning(f"Error guardando en bandeja: {e}")
+
+
 def mostrar_notificacion_thread(datos: dict):
     """Lanza la ventana emergente en el hilo principal de tkinter."""
+    guardar_en_bandeja(datos)
     with _cola_lock:
         _cola_mensajes.append(datos)
     # La ventana.py gestiona la cola desde su propio loop
 
 
+_cola_bandeja      = []
+_cola_bandeja_lock = threading.Lock()
+
+
 def mostrar_ultimo_mensaje():
     """Re-abre la ventana con el último mensaje recibido."""
     if _ultimo_mensaje:
-        mostrar_notificacion_thread(_ultimo_mensaje)
+        with _cola_lock:
+            _cola_mensajes.append(_ultimo_mensaje)
+
+
+def abrir_bandeja():
+    """Señaliza al loop tkinter que abra la ventana de historial."""
+    with _cola_bandeja_lock:
+        _cola_bandeja.append(True)
 
 
 # ─── Icono en bandeja del sistema ─────────────────────────────────────────────
@@ -277,9 +313,10 @@ def iniciar_tray():
         img = crear_icono_imagen()
 
     menu = pystray.Menu(
-        pystray.MenuItem('Ver último mensaje', lambda icon, item: mostrar_ultimo_mensaje()),
+        pystray.MenuItem('Ver último mensaje',    lambda icon, item: mostrar_ultimo_mensaje()),
+        pystray.MenuItem('Bandeja de mensajes',   lambda icon, item: abrir_bandeja()),
         pystray.Menu.SEPARATOR,
-        pystray.MenuItem('Salir',              salir_app),
+        pystray.MenuItem('Salir',                 salir_app),
     )
     _tray_icon = pystray.Icon('infoDesk', img, 'infoDesk', menu)
     _tray_icon.run()
@@ -323,6 +360,9 @@ if __name__ == '__main__':
     iniciar_ventana_loop(
         cola_mensajes=_cola_mensajes,
         cola_lock=_cola_lock,
+        cola_bandeja=_cola_bandeja,
+        cola_bandeja_lock=_cola_bandeja_lock,
+        bandeja_path=BANDEJA_PATH,
         pc_nombre=PC_NOMBRE,
         api_url=API_URL,
         enviar_confirmacion_fn=enviar_confirmacion,
