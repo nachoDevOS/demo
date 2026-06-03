@@ -4,49 +4,198 @@
 
 @push('styles')
 <style>
+    /* ── Tipo de mensaje ──────────────────────────────────── */
+    .tipo-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 10px;
+    }
     .tipo-btn input[type=radio] { display: none; }
     .tipo-btn label {
-        cursor: pointer; padding: .4rem 1.1rem; border-radius: 50px;
-        border: 2px solid #dee2e6; font-weight: 600; font-size: .85rem;
-        transition: all .2s; user-select: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        padding: .75rem .5rem;
+        border-radius: 12px;
+        border: 2px solid #E2E8F0;
+        font-weight: 600;
+        font-size: .78rem;
+        transition: all .18s;
+        user-select: none;
+        background: #F8FAFC;
+        color: #64748B;
+        width: 100%;
     }
-    .tipo-btn input[value=notificacion]:checked + label { background: #1B4F8A; border-color: #1B4F8A; color: #fff; }
-    .tipo-btn input[value=instructivo]:checked  + label { background: #1D6A3A; border-color: #1D6A3A; color: #fff; }
-    .tipo-btn input[value=urgente]:checked      + label { background: #B71C1C; border-color: #B71C1C; color: #fff; }
-    .tipo-btn input[value=reunion]:checked      + label { background: #E65100; border-color: #E65100; color: #fff; }
+    .tipo-btn label i { font-size: 1.2rem; }
+    .tipo-btn label:hover { border-color: #94A3B8; background: #F1F5F9; color: #334155; }
+    .tipo-btn input:checked + label {
+        border-color: var(--tipo-color);
+        color: var(--tipo-color);
+        background: color-mix(in srgb, var(--tipo-color) 8%, white);
+    }
+
+    /* ── Inputs ──────────────────────────────────────────── */
+    .form-control-mp {
+        border: 1.5px solid #E2E8F0;
+        border-radius: 10px;
+        padding: .65rem 1rem;
+        font-size: .9rem;
+        transition: border-color .18s, box-shadow .18s;
+        background: #FAFCFF;
+    }
+    .form-control-mp:focus {
+        border-color: #1B4F8A;
+        box-shadow: 0 0 0 3px rgba(27,79,138,.1);
+        outline: none;
+        background: #fff;
+    }
+    textarea.form-control-mp { resize: vertical; }
+
+    .char-counter { font-size: .75rem; color: #94A3B8; }
+    .form-label-mp { font-size: .82rem; font-weight: 600; color: #374151; margin-bottom: .4rem; }
+
+    /* ── Zona upload ─────────────────────────────────────── */
     #zona-upload {
-        border: 2px dashed #b0bec5; border-radius: 10px; padding: 2rem; text-align: center;
-        cursor: pointer; transition: all .2s; background: #fafafa;
+        border: 2px dashed #CBD5E1;
+        border-radius: 12px;
+        padding: 1.8rem 1rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all .2s;
+        background: #F8FAFC;
     }
-    #zona-upload.drag-over { border-color: #1B4F8A; background: #E3F0FF; }
-    #preview-archivo { max-width: 100%; max-height: 160px; border-radius: 8px; margin-top: .5rem; }
-    .historial-mini .badge { font-size: .7rem; }
+    #zona-upload:hover, #zona-upload.drag-over {
+        border-color: #1B4F8A;
+        background: #EEF4FF;
+    }
+    #zona-upload .upload-icon {
+        width: 48px; height: 48px;
+        background: #E8EEF6;
+        border-radius: 12px;
+        display: flex; align-items: center; justify-content: center;
+        margin: 0 auto .8rem;
+        font-size: 1.3rem;
+        color: #1B4F8A;
+        transition: all .2s;
+    }
+    #zona-upload:hover .upload-icon { background: #D0DFF5; }
+    #preview-archivo { max-width: 100%; max-height: 140px; border-radius: 8px; margin-top: .5rem; }
+
+    /* ── Card archivos seleccionado ──────────────────────── */
+    .archivo-card {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        background: #F0F7FF;
+        border: 1px solid #BFDBFE;
+        border-radius: 10px;
+        padding: .7rem 1rem;
+        margin-top: .75rem;
+    }
+    .archivo-card .archivo-icon {
+        width: 38px; height: 38px;
+        border-radius: 8px;
+        background: #DBEAFE;
+        display: flex; align-items: center; justify-content: center;
+        color: #1B4F8A;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
+    .archivo-card .archivo-meta { flex-grow: 1; min-width: 0; }
+    .archivo-card .archivo-nombre { font-size: .83rem; font-weight: 600; color: #1E3A5F; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .archivo-card .archivo-size { font-size: .75rem; color: #64748B; }
+    .btn-quitar-archivo {
+        background: none;
+        border: none;
+        color: #94A3B8;
+        cursor: pointer;
+        padding: 4px;
+        border-radius: 6px;
+        transition: all .15s;
+        flex-shrink: 0;
+    }
+    .btn-quitar-archivo:hover { background: #FEE2E2; color: #B91C1C; }
+
+    /* ── Botón enviar ────────────────────────────────────── */
+    #btn-enviar {
+        padding: .85rem;
+        font-size: 1rem;
+        letter-spacing: .3px;
+    }
+
+    /* ── Toast ───────────────────────────────────────────── */
+    .toast-mp {
+        border-radius: 10px;
+        border: none;
+        font-size: .87rem;
+        padding: .75rem 1rem;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .toast-mp.ok  { background: #DCFCE7; color: #166534; }
+    .toast-mp.err { background: #FEE2E2; color: #991B1B; }
+    .toast-mp .toast-icon { font-size: 1rem; }
+
+    /* ── Historial mini ──────────────────────────────────── */
+    .hm-item {
+        padding: .7rem 1rem;
+        border-bottom: 1px solid #F1F5F9;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        transition: background .15s;
+    }
+    .hm-item:last-child { border-bottom: none; }
+    .hm-item:hover { background: #F8FAFC; }
+    .hm-dot {
+        width: 8px; height: 8px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+    .hm-titulo { font-size: .82rem; font-weight: 600; color: #1E293B; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 150px; }
+    .hm-meta   { font-size: .72rem; color: #94A3B8; }
+
+    .seccion-titulo {
+        font-size: .95rem;
+        font-weight: 700;
+        color: #1E293B;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .seccion-titulo i { color: #1B4F8A; font-size: .9rem; }
 </style>
 @endpush
 
 @section('content')
 <div class="row g-4">
-    {{-- Formulario principal --}}
+
+    {{-- ── Formulario principal ──────────────────────────── --}}
     <div class="col-lg-8">
         <div class="card card-mp">
-            <div class="card-header bg-white border-0 pt-3 pb-0 d-flex align-items-center justify-content-between">
-                <h5 class="mb-0 fw-bold" style="color:#1B4F8A;">
-                    <i class="fas fa-paper-plane me-2"></i>Enviar Mensaje
-                </h5>
-                <span class="pc-badge">
-                    <i class="fas fa-desktop me-1"></i>
+            <div class="card-header bg-white border-0 px-4 pt-4 pb-3 d-flex align-items-center justify-content-between">
+                <span class="seccion-titulo">
+                    <i class="fas fa-paper-plane"></i>Nuevo mensaje
+                </span>
+                <span class="pc-badge" id="pc-badge">
+                    <i class="fas fa-circle" style="font-size:.55rem;color:#22C55E;"></i>
                     <span id="pc-count">...</span> PC(s) conectadas
                 </span>
             </div>
-            <div class="card-body pt-3">
 
-                {{-- Toast --}}
-                <div id="toast-ok" class="alert alert-success d-none">
-                    <i class="fas fa-check-circle me-2"></i>
-                    Mensaje enviado a <strong id="toast-pcs">0</strong> PC(s) correctamente.
+            <div class="card-body px-4 pb-4 pt-1">
+
+                {{-- Toasts --}}
+                <div id="toast-ok" class="toast-mp ok d-none mb-3">
+                    <i class="fas fa-check-circle toast-icon"></i>
+                    Mensaje enviado a <strong id="toast-pcs" class="mx-1">0</strong> PC(s) correctamente.
                 </div>
-                <div id="toast-err" class="alert alert-danger d-none">
-                    <i class="fas fa-exclamation-circle me-2"></i>
+                <div id="toast-err" class="toast-mp err d-none mb-3">
+                    <i class="fas fa-exclamation-circle toast-icon"></i>
                     <span id="toast-err-msg">Error al enviar.</span>
                 </div>
 
@@ -54,14 +203,18 @@
                     @csrf
 
                     {{-- Tipo --}}
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Tipo de mensaje</label>
-                        <div class="d-flex flex-wrap gap-2">
-                            @foreach(['notificacion'=>'Notificación','instructivo'=>'Instructivo','urgente'=>'Urgente','reunion'=>'Reunión'] as $val => $label)
+                    <div class="mb-4">
+                        <label class="form-label-mp">Tipo de mensaje</label>
+                        <div class="tipo-grid" style="grid-template-columns: repeat({{ min(count($tipos), 4) }}, 1fr);">
+                            @foreach($tipos as $i => $t)
                             <div class="tipo-btn">
-                                <input type="radio" name="tipo" id="tipo_{{ $val }}" value="{{ $val }}"
-                                       {{ $val === 'notificacion' ? 'checked' : '' }}>
-                                <label for="tipo_{{ $val }}">{{ $label }}</label>
+                                <input type="radio" name="tipo" id="tipo_{{ $t->slug }}" value="{{ $t->slug }}"
+                                       {{ $i === 0 ? 'checked' : '' }}
+                                       data-color="{{ $t->color }}">
+                                <label for="tipo_{{ $t->slug }}"
+                                       style="--tipo-color: {{ $t->color }}">
+                                    <i class="fas {{ $t->icono }}"></i>{{ $t->nombre }}
+                                </label>
                             </div>
                             @endforeach
                         </div>
@@ -69,51 +222,57 @@
 
                     {{-- Título --}}
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Título <span class="text-danger">*</span></label>
-                        <input type="text" name="titulo" id="titulo" class="form-control"
-                               maxlength="200" placeholder="Asunto del mensaje" required>
-                        <div class="text-end text-muted small mt-1">
-                            <span id="cnt-titulo">0</span>/200
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label-mp mb-0" for="titulo">Título <span class="text-danger">*</span></label>
+                            <span class="char-counter"><span id="cnt-titulo">0</span>/200</span>
                         </div>
+                        <input type="text" name="titulo" id="titulo" class="form-control form-control-mp"
+                               maxlength="200" placeholder="Asunto del mensaje" required>
                     </div>
 
                     {{-- Cuerpo --}}
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Mensaje <span class="text-danger">*</span></label>
-                        <textarea name="cuerpo" id="cuerpo" class="form-control" rows="5"
-                                  maxlength="2000" placeholder="Escribe el contenido del mensaje..." required></textarea>
-                        <div class="text-end text-muted small mt-1">
-                            <span id="cnt-cuerpo">0</span>/2000
+                        <div class="d-flex justify-content-between align-items-center mb-1">
+                            <label class="form-label-mp mb-0" for="cuerpo">Mensaje <span class="text-danger">*</span></label>
+                            <span class="char-counter"><span id="cnt-cuerpo">0</span>/2000</span>
                         </div>
+                        <textarea name="cuerpo" id="cuerpo" class="form-control form-control-mp" rows="5"
+                                  maxlength="2000" placeholder="Escribe el contenido del mensaje..." required></textarea>
                     </div>
 
                     {{-- Remitente --}}
-                    <div class="mb-3">
-                        <label class="form-label fw-semibold">Remitente</label>
-                        <input type="text" name="remitente" class="form-control"
+                    <div class="mb-4">
+                        <label class="form-label-mp" for="remitente">Remitente</label>
+                        <input type="text" name="remitente" id="remitente" class="form-control form-control-mp"
                                value="{{ Auth::user()->name }}" maxlength="100">
                     </div>
 
                     {{-- Archivo --}}
                     <div class="mb-4">
-                        <label class="form-label fw-semibold">Archivo adjunto <small class="text-muted">(PDF, JPG, PNG, GIF — máx. 20MB)</small></label>
+                        <label class="form-label-mp">Archivo adjunto <span class="text-muted fw-normal">(PDF, JPG, PNG, GIF — máx. 20 MB)</span></label>
                         <div id="zona-upload" onclick="document.getElementById('archivo-input').click()">
-                            <i class="fas fa-cloud-upload-alt fa-2x text-secondary mb-2"></i>
-                            <p class="mb-0 text-muted">Arrastra un archivo aquí o haz clic para seleccionar</p>
-                            <div id="archivo-info" class="mt-2 d-none">
-                                <img id="preview-archivo" src="" alt="" class="d-none">
-                                <div id="pdf-icon" class="d-none">
-                                    <i class="fas fa-file-pdf fa-3x text-danger"></i>
-                                </div>
-                                <p id="archivo-nombre" class="fw-semibold mb-0 mt-1 small"></p>
-                                <p id="archivo-size" class="text-muted mb-0 small"></p>
-                                <button type="button" id="btn-quitar" class="btn btn-sm btn-outline-danger mt-2">
-                                    <i class="fas fa-times me-1"></i>Quitar archivo
-                                </button>
-                            </div>
+                            <div class="upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
+                            <p class="mb-0 fw-semibold" style="font-size:.85rem;color:#475569;">Arrastrá un archivo o hacé clic para seleccionar</p>
+                            <p class="mb-0 mt-1" style="font-size:.75rem;color:#94A3B8;">PDF, JPG, PNG, GIF</p>
                         </div>
                         <input type="file" id="archivo-input" name="archivo"
                                accept=".pdf,.jpg,.jpeg,.png,.gif" class="d-none">
+
+                        <div id="archivo-info" class="d-none">
+                            <div class="archivo-card">
+                                <div class="archivo-icon">
+                                    <i id="archivo-icon-tipo" class="fas fa-file"></i>
+                                </div>
+                                <div class="archivo-meta">
+                                    <div class="archivo-nombre" id="archivo-nombre"></div>
+                                    <div class="archivo-size" id="archivo-size"></div>
+                                </div>
+                                <button type="button" class="btn-quitar-archivo" id="btn-quitar" title="Quitar archivo">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <img id="preview-archivo" src="" alt="" class="d-none mt-2 ms-1" style="max-height:120px;border-radius:8px;">
+                        </div>
                     </div>
 
                     <button type="submit" id="btn-enviar" class="btn btn-mp btn-lg w-100 fw-bold">
@@ -127,37 +286,58 @@
         </div>
     </div>
 
-    {{-- Panel lateral: historial rápido --}}
-    <div class="col-lg-4">
+    {{-- ── Panel lateral ─────────────────────────────────── --}}
+    <div class="col-lg-4 d-flex flex-column gap-4">
+
+        {{-- Stats rápido --}}
         <div class="card card-mp">
-            <div class="card-header bg-white border-0 pt-3 pb-0">
-                <h6 class="fw-bold" style="color:#1B4F8A;">
-                    <i class="fas fa-history me-2"></i>Últimos mensajes
-                </h6>
-            </div>
-            <div class="card-body p-0">
-                <ul class="list-group list-group-flush historial-mini" id="historial-mini">
+            <div class="card-body px-4 py-3">
+                <p class="form-label-mp mb-3">Actividad reciente</p>
+                <div id="historial-mini">
                     @forelse($ultimosMensajes as $m)
-                    <li class="list-group-item px-3 py-2">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <div class="flex-grow-1 me-2">
-                                <p class="mb-0 fw-semibold small text-truncate" style="max-width:180px;">{{ $m->titulo }}</p>
-                                <small class="text-muted">{{ $m->created_at?->diffForHumans() }}</small>
-                            </div>
-                            <span class="badge badge-{{ $m->tipo }} text-white">{{ ucfirst($m->tipo) }}</span>
+                    @php
+                        $dotColors = ['notificacion'=>'#1B4F8A','instructivo'=>'#1D6A3A','urgente'=>'#B71C1C','reunion'=>'#E65100'];
+                        $dot = $dotColors[$m->tipo] ?? '#1B4F8A';
+                    @endphp
+                    <div class="hm-item">
+                        <div class="hm-dot" style="background:{{ $dot }};"></div>
+                        <div class="flex-grow-1 min-width-0">
+                            <div class="hm-titulo">{{ $m->titulo }}</div>
+                            <div class="hm-meta">{{ $m->created_at?->diffForHumans() }}</div>
                         </div>
-                    </li>
+                    </div>
                     @empty
-                    <li class="list-group-item text-center text-muted py-3 small">Sin mensajes aún</li>
+                    <p class="text-center text-muted small py-2 mb-0">Sin mensajes aún</p>
                     @endforelse
-                </ul>
-                <div class="p-2 border-top">
-                    <a href="{{ route('historial') }}" class="btn btn-sm btn-outline-secondary w-100">
-                        Ver historial completo
+                </div>
+                <div class="mt-3 pt-2 border-top">
+                    <a href="{{ route('historial') }}"
+                       class="btn btn-sm w-100 fw-semibold"
+                       style="border:1.5px solid #E2E8F0;border-radius:8px;color:#475569;font-size:.8rem;">
+                        <i class="fas fa-history me-1"></i>Ver historial completo
                     </a>
                 </div>
             </div>
         </div>
+
+        {{-- Acceso rápido confirmaciones --}}
+        <div class="card card-mp">
+            <div class="card-body px-4 py-3 d-flex align-items-center gap-3">
+                <div style="width:42px;height:42px;background:#EEF4FF;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+                    <i class="fas fa-check-double" style="color:#1B4F8A;"></i>
+                </div>
+                <div class="flex-grow-1">
+                    <div class="fw-semibold" style="font-size:.85rem;color:#1E293B;">Confirmaciones</div>
+                    <div style="font-size:.75rem;color:#94A3B8;">Ver estado de entrega</div>
+                </div>
+                <a href="{{ route('confirmaciones') }}"
+                   class="btn btn-sm btn-mp"
+                   style="border-radius:8px;font-size:.78rem;padding:.35rem .9rem;box-shadow:none;">
+                    Ver
+                </a>
+            </div>
+        </div>
+
     </div>
 </div>
 @endsection
@@ -166,7 +346,6 @@
 <script>
 const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-// Contador de caracteres
 document.getElementById('titulo').addEventListener('input', function() {
     document.getElementById('cnt-titulo').textContent = this.value.length;
 });
@@ -176,7 +355,7 @@ document.getElementById('cuerpo').addEventListener('input', function() {
 
 // Drag & drop
 const zona = document.getElementById('zona-upload');
-zona.addEventListener('dragover', e => { e.preventDefault(); zona.classList.add('drag-over'); });
+zona.addEventListener('dragover',  e => { e.preventDefault(); zona.classList.add('drag-over'); });
 zona.addEventListener('dragleave', () => zona.classList.remove('drag-over'));
 zona.addEventListener('drop', e => {
     e.preventDefault();
@@ -189,29 +368,28 @@ zona.addEventListener('drop', e => {
         mostrarPreview(e.dataTransfer.files[0]);
     }
 });
-
 document.getElementById('archivo-input').addEventListener('change', function() {
     if (this.files.length) mostrarPreview(this.files[0]);
 });
 
 function mostrarPreview(file) {
-    const info = document.getElementById('archivo-info');
-    const img  = document.getElementById('preview-archivo');
-    const pdfI = document.getElementById('pdf-icon');
-    const nombre = document.getElementById('archivo-nombre');
-    const size = document.getElementById('archivo-size');
+    document.getElementById('archivo-info').classList.remove('d-none');
+    document.getElementById('archivo-nombre').textContent = file.name;
+    document.getElementById('archivo-size').textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
 
-    info.classList.remove('d-none');
-    nombre.textContent = file.name;
-    size.textContent = (file.size / 1024 / 1024).toFixed(2) + ' MB';
+    const ico = document.getElementById('archivo-icon-tipo');
+    const img = document.getElementById('preview-archivo');
 
     if (file.type.startsWith('image/')) {
+        ico.className = 'fas fa-file-image';
         img.src = URL.createObjectURL(file);
         img.classList.remove('d-none');
-        pdfI.classList.add('d-none');
-    } else {
+    } else if (file.type === 'application/pdf') {
+        ico.className = 'fas fa-file-pdf';
         img.classList.add('d-none');
-        pdfI.classList.remove('d-none');
+    } else {
+        ico.className = 'fas fa-file';
+        img.classList.add('d-none');
     }
 }
 
@@ -222,20 +400,20 @@ document.getElementById('btn-quitar').addEventListener('click', function(e) {
     document.getElementById('preview-archivo').src = '';
 });
 
-// Envío del formulario
+// Envío
 document.getElementById('form-envio').addEventListener('submit', async function(e) {
     e.preventDefault();
-    const btn    = document.getElementById('btn-enviar');
-    const text   = document.getElementById('btn-text');
-    const spin   = document.getElementById('btn-spinner');
-    const toastOk  = document.getElementById('toast-ok');
-    const toastErr = document.getElementById('toast-err');
+    const btn     = document.getElementById('btn-enviar');
+    const text    = document.getElementById('btn-text');
+    const spin    = document.getElementById('btn-spinner');
+    const toastOk = document.getElementById('toast-ok');
+    const toastEr = document.getElementById('toast-err');
 
     btn.disabled = true;
     text.classList.add('d-none');
     spin.classList.remove('d-none');
     toastOk.classList.add('d-none');
-    toastErr.classList.add('d-none');
+    toastEr.classList.add('d-none');
 
     try {
         const fd = new FormData(this);
@@ -257,11 +435,11 @@ document.getElementById('form-envio').addEventListener('submit', async function(
         } else {
             const msgs = data.errors ? Object.values(data.errors).flat().join(' ') : 'Error al enviar.';
             document.getElementById('toast-err-msg').textContent = msgs;
-            toastErr.classList.remove('d-none');
+            toastEr.classList.remove('d-none');
         }
-    } catch (err) {
+    } catch {
         document.getElementById('toast-err-msg').textContent = 'Error de conexión.';
-        toastErr.classList.remove('d-none');
+        toastEr.classList.remove('d-none');
     } finally {
         btn.disabled = false;
         text.classList.remove('d-none');
@@ -269,7 +447,7 @@ document.getElementById('form-envio').addEventListener('submit', async function(
     }
 });
 
-// Contador PCs conectadas (cada 3s)
+// PC counter
 async function actualizarPcs() {
     try {
         const r = await fetch('{{ route("panel.pcs") }}');
@@ -284,19 +462,16 @@ async function recargarHistorialMini() {
     try {
         const r = await fetch('{{ route("historial.data") }}');
         const d = await r.json();
-        const ul = document.getElementById('historial-mini');
         if (!d.data || !d.data.length) return;
-        const badges = {notificacion:'#1B4F8A',instructivo:'#1D6A3A',urgente:'#B71C1C',reunion:'#E65100'};
-        ul.innerHTML = d.data.slice(0,5).map(m => `
-            <li class="list-group-item px-3 py-2">
-                <div class="d-flex justify-content-between align-items-start">
-                    <div class="flex-grow-1 me-2">
-                        <p class="mb-0 fw-semibold small text-truncate" style="max-width:180px;">${m.titulo}</p>
-                        <small class="text-muted">${m.created_at}</small>
-                    </div>
-                    <span class="badge text-white" style="background:${badges[m.tipo]}">${m.tipo}</span>
+        const dots = {notificacion:'#1B4F8A',instructivo:'#1D6A3A',urgente:'#B71C1C',reunion:'#E65100'};
+        document.getElementById('historial-mini').innerHTML = d.data.slice(0,5).map(m => `
+            <div class="hm-item">
+                <div class="hm-dot" style="background:${dots[m.tipo]||'#1B4F8A'};"></div>
+                <div class="flex-grow-1">
+                    <div class="hm-titulo">${m.titulo}</div>
+                    <div class="hm-meta">${m.created_at}</div>
                 </div>
-            </li>
+            </div>
         `).join('');
     } catch {}
 }

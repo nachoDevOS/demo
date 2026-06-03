@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Events\MensajeEnviado;
 use App\Models\Mensaje;
 use App\Models\PcActiva;
+use App\Models\TipoMensaje;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -16,15 +17,17 @@ class PanelController extends Controller
     public function index(): View
     {
         $ultimosMensajes = Mensaje::latest()->limit(5)->get();
+        $tipos           = TipoMensaje::activos();
 
-        return view('panel', compact('ultimosMensajes'));
+        return view('panel', compact('ultimosMensajes', 'tipos'));
     }
 
     public function enviar(Request $request): JsonResponse
     {
         try {
+            $slugsValidos = implode(',', TipoMensaje::slugsActivos());
             $request->validate([
-                'tipo'      => ['required', 'in:notificacion,instructivo,urgente,reunion'],
+                'tipo'      => ['required', 'in:'.$slugsValidos],
                 'titulo'    => ['required', 'string', 'max:200'],
                 'cuerpo'    => ['required', 'string', 'max:2000'],
                 'remitente' => ['required', 'string', 'max:100'],

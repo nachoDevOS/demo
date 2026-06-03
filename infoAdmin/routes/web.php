@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\PanelController;
 use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\ConfirmacionesController;
+use App\Http\Controllers\TipoMensajeController;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('guest')->group(function () {
@@ -20,5 +21,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/historial/data', [HistorialController::class, 'data'])->name('historial.data');
     Route::get('/confirmaciones', [ConfirmacionesController::class, 'index'])->name('confirmaciones');
     Route::get('/confirmaciones/data', [ConfirmacionesController::class, 'data'])->name('confirmaciones.data');
+    Route::get('/tipos', [TipoMensajeController::class, 'index'])->name('tipos.index');
+    Route::post('/tipos', [TipoMensajeController::class, 'store'])->name('tipos.store');
+    Route::put('/tipos/{tipo}', [TipoMensajeController::class, 'update'])->name('tipos.update');
+    Route::delete('/tipos/{tipo}', [TipoMensajeController::class, 'destroy'])->name('tipos.destroy');
     Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 });
