@@ -240,7 +240,6 @@ def iniciar_tray():
 
     menu = pystray.Menu(
         pystray.MenuItem('Ver último mensaje', lambda icon, item: mostrar_ultimo_mensaje()),
-        pystray.MenuItem('Configuración',      lambda icon, item: abrir_config()),
         pystray.Menu.SEPARATOR,
         pystray.MenuItem('Salir',              salir_app),
     )
